@@ -1,7 +1,11 @@
 package study;
 
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import study.Dao.DaoFactory;
 import study.Dao.UserDao;
 import study.model.User;
 
@@ -12,7 +16,8 @@ public class Application {
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
         SpringApplication.run(Application.class, args);
 
-        UserDao dao = new UserDao();
+        ApplicationContext applicationContext = new AnnotationConfigApplicationContext(DaoFactory.class);
+        UserDao dao = applicationContext.getBean("userDao", UserDao.class);
         User user = new User();
         user.setId("whiteship");
         user.setName("백기선");

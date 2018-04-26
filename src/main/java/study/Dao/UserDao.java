@@ -6,9 +6,14 @@ import java.sql.*;
 
 public class UserDao {
 
+    ConnectionMaker connectionMaker;
+
+    public UserDao(ConnectionMaker connectionMaker) {
+        this.connectionMaker = connectionMaker;
+    }
+
     public void add(User user) throws ClassNotFoundException, SQLException {
-        Class.forName("org.h2.Driver");
-        Connection c = DriverManager.getConnection("jdbc:h2:mem:testdb", "sa", "");
+        Connection c = connectionMaker.makeConnection();
         PreparedStatement ps = c.prepareStatement("INSERT INTO users(id, name, password) values(?, ?, ?)");
         ps.setString(1, user.getId());
         ps.setString(2, user.getName());
@@ -21,8 +26,7 @@ public class UserDao {
     }
 
     public User get(String id) throws ClassNotFoundException, SQLException {
-        Class.forName("org.h2.Driver");
-        Connection c = DriverManager.getConnection("jdbc:h2:mem:testdb", "sa", "");
+        Connection c = connectionMaker.makeConnection();
         PreparedStatement ps = c.prepareStatement("SELECT * FROM users WHERE id = ?");
         ps.setString(1, id);
 
