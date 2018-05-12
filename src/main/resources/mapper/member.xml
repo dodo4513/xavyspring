@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="study.dao.MemberMapper">
-    <select id="selectMember2" resultType="Member">
+    <select id="selectByNo" resultType="Member">
         select * from member where no = #{no}
     </select>
 </mapper>
