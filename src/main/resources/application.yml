@@ -1,0 +1,9 @@
+spring:
+  jpa:
+    properties:
+          hibernate:
+            dialect: org.hibernate.dialect.H2Dialect
+            format_sql: true
+            use_sql_comments: true
+            show_seq: true
+            show_sql: true

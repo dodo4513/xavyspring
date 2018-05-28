@@ -1,4 +1,4 @@
-package study.Dao;
+package study.dao;
 
 import study.model.User;
 
@@ -12,35 +12,71 @@ public class UserDao {
         this.connectionMaker = connectionMaker;
     }
 
-    public void add(User user) throws ClassNotFoundException, SQLException {
+    public long add(User user) throws ClassNotFoundException, SQLException {
         Connection c = connectionMaker.makeConnection();
-        PreparedStatement ps = c.prepareStatement("INSERT INTO users(id, name, password) values(?, ?, ?)");
-        ps.setString(1, user.getId());
-        ps.setString(2, user.getName());
-        ps.setString(3, user.getPassword());
+        PreparedStatement ps = c.prepareStatement("INSERT INTO USERS(name, password) values(?, ?)", Statement.RETURN_GENERATED_KEYS);
+        ps.setString(1, user.getName());
+        ps.setString(2, user.getPassword());
 
-        ps.executeUpdate();
+        int effectCount = ps.executeUpdate();
+
+        ResultSet rs = ps.getGeneratedKeys();
+        long generatedKey = 0;
+        if (rs.next()) {
+            generatedKey = rs.getInt(1);
+        }
 
         ps.close();
         c.close();
+
+        return generatedKey;
     }
 
-    public User get(String id) throws ClassNotFoundException, SQLException {
-        Connection c = connectionMaker.makeConnection();
-        PreparedStatement ps = c.prepareStatement("SELECT * FROM users WHERE id = ?");
-        ps.setString(1, id);
+    public User get(Long id) throws ClassNotFoundException, SQLException {
+        try {
 
-        ResultSet rs = ps.executeQuery();
-        rs.next();
-        User user = new User();
-        user.setId(rs.getString("id"));
-        user.setName(rs.getString("name"));
-        user.setPassword(rs.getString("password"));
+            Connection c = connectionMaker.makeConnection();
+            PreparedStatement ps = c.prepareStatement("SELECT * FROM USERS WHERE id = ?");
+            ps.setLong(1, id);
 
-        rs.close();
-        ps.close();
-        c.close();
+            ResultSet rs = ps.executeQuery();
+            rs.next();
+            User user = new User();
+            user.setId(rs.getLong("id"));
+            user.setName(rs.getString("name"));
+            user.setPassword(rs.getString("password"));
 
-        return user;
+            rs.close();
+            ps.close();
+            c.close();
+
+            return user;
+        } catch (SQLException e) {
+            return null;
+        }
+    }
+
+    public User get(String name) throws ClassNotFoundException, SQLException {
+        try {
+
+            Connection c = connectionMaker.makeConnection();
+            PreparedStatement ps = c.prepareStatement("SELECT * FROM USERS WHERE name = ?");
+            ps.setString(1, name);
+
+            ResultSet rs = ps.executeQuery();
+            rs.next();
+            User user = new User();
+            user.setId(rs.getLong("id"));
+            user.setName(rs.getString("name"));
+            user.setPassword(rs.getString("password"));
+
+            rs.close();
+            ps.close();
+            c.close();
+
+            return user;
+        } catch (SQLException e) {
+            return null;
+        }
     }
 }

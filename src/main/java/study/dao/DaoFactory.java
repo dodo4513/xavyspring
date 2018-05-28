@@ -1,4 +1,4 @@
-package study.Dao;
+package study.dao;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
